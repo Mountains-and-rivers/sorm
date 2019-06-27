@@ -53,7 +53,7 @@ func main() {
 	// 给模型赋值
 	modelStu = db.Model("student2")
 
-	// 创建表
+	// 创建表,初始化的时候会自动生成表，添加字段在表结构体添加后初始化会添加新的字段,为了安全起见,本驱动不提供删除字段方法
 	if err = modelStu.Ensure(&Student{}); err != nil {
 		panic(err)
 	}
