@@ -220,7 +220,7 @@ func main() {
 	}
 }
 ```
-Moongo:
+Mongo:
 ```Golang
 package main
 
