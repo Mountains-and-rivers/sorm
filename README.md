@@ -161,10 +161,85 @@ func deleteStudent(id string) (err error) {
 
 ```  
 # 1.2. 连接数据库
-  ## 1.2.1. 数据库连接
-  (1) 导入数据库驱动 
+## 1.2.1. 数据库连接  
+MySQL:
 ``` Golang
-  import _ "github.com/suboat/sorm/driver/mysql"
+package main
+
+import (
+	"github.com/suboat/sorm"
+	_ "github.com/suboat/sorm/driver/mysql"
+)
+
+func main() {
+
+	conn := `{"user":"business", "password": "business", "host": "127.0.0.1", "port": "33306", 
+"database": "business", "sslmode": "disable"}`
+	if db, err := orm.New(orm.DriverNameMysql, conn); err != nil {
+		panic(err)
+	} else {
+		defer db.Close()
+	}
+}
 ```
+PostgreSQL:
+``` Golang
+package main
+
+import (
+	_ "github.com/suboat/sorm/driver/pg"
+	"github.com/suboat/sorm"
+)
+func main() {
+
+	conn := `{"user":"business", "password": "business", "host": "127.0.0.1", "port": "65432", 
+"database": "business","sslmode": "disable"}`
+	if db, err := orm.New(orm.DriverNamePostgres, conn); err != nil {
+		panic(err)
+	} else {
+		defer db.Close()
+	}
+}
+
+```
+Sqlite:
+```Golang
+package main
+
+import (
+	_"github.com/suboat/sorm/driver/sqlite"
+	"github.com/suboat/sorm"
+)
+func main() {
+
+	conn := `{"database":"data_sqlite/business.db"}`
+	if db, err := orm.New(orm.DriverNameSQLite, conn); err != nil {
+		panic(err)
+	} else {
+		defer db.Close()
+	}
+}
+```
+Moongo:
+```Golang
+package main
+
+import (
+	"github.com/suboat/sorm"
+	_ "github.com/suboat/sorm/driver/mongo"
+)
+
+func main() {
+
+	conn := `{"url":"mongodb://127.0.0.1:27017/", "db": "business"}`
+	if db, err := orm.New(orm.DriverNameMongo, conn); err != nil {
+		panic(err)
+	} else {
+		defer db.Close()
+	}
+}
+
+```
+
 ## 1.2.2.  
 # 
