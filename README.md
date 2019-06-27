@@ -241,5 +241,17 @@ func main() {
 
 ```
 
-## 1.2.2.  
-# 
+## 1.2.2. 删除表
+ ```Golang
+ 	db.Drop()
+ ```
+ ## 1.2.3. 创建表
+ ```Golang
+ 	db.Ensure(&User{})
+ ```
+ ## 1.2.4.操作列
+ 	```Golang
+		type User struct{
+			Name String `sorm:"index"`
+		}
+	```
