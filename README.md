@@ -1,11 +1,10 @@
 # 目录
 # 1.1. 快速入门
-  ## 1.1. 安装
+  ## 1.1.1 安装
     go get github.com/suboat/sorm
-  ## 1.2. 快速入门
-```Goland
-    package main
-
+  ## 1.1.2. 快速入门
+```Golang
+package main
 import (
 	"errors"
 	"fmt"
@@ -163,5 +162,9 @@ func deleteStudent(id string) (err error) {
 ```  
 # 1.2. 连接数据库
   ## 1.2.1. 数据库连接
-  ## 1.2.2.  
+  (1) 导入数据库驱动 
+``` Golang
+  import _ "github.com/suboat/sorm/driver/mysql"
+```
+## 1.2.2.  
 # 
