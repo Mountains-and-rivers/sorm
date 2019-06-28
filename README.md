@@ -249,8 +249,48 @@ func main() {
  ```Golang
  	db.Ensure(&User{})
  ```
- # 1.3 模型
- ## 1.3.1模型定义方法
+ # 1.3. 模型
+ 模型提供的方法
+ ```Golang
+// Model 模型定义
+type Model interface {
+	String() string                      // 表名
+	Objects() Objects                    // 返回object对象
+	ObjectsWith(opt *ArgObjects) Objects // 返回object对象
+
+	// 通过tag来定义索引:
+	// unique索引    Name string `sorm:"unique"`
+	// index索引     Name string `sorm:"index"`
+	// TODO: 全文索引 Name string `sorm:"text"`
+	Ensure(st interface{}) error // 通过struct的tag来 添加字段,确认索引
+	// 确认字段存在
+	EnsureColumn(st interface{}) error
+	// 确认索引存在
+	EnsureIndex(index Index) error
+
+	// 事务
+	Begin() (Trans, error)                  // 事务开始
+	BeginWith(opt *ArgTrans) (Trans, error) // 指定事务开始
+	Commit(Trans) error                     // 阶段二提交
+	Rollback(Trans) error                   // 回滚操作
+	AutoTrans(Trans) error                  // 依据Trans内是否储存有错误来自动决定回滚或提交
+
+	// 表的读写锁
+	Lock()
+	Unlock()
+	RLock()
+	RUnlock()
+
+	// 直接执行数据库语句
+	Exec(query string, args ...interface{}) (result Result, err error)
+	// 删表
+	Drop() error
+
+	// other
+	With(opt *ArgModel) Model // 返回一个新的model
+}
+ ```
+ ## 1.3.1. 模型定义方法
  Key|Args|Example|Comment|
 ----|--------|--------|--------|
 primary|-|sorm:"primary"|设置为主键|
@@ -259,5 +299,50 @@ uique|relative field(s)|sorm:"unique(username,email)"|(联合)唯一|
 index|relative field(s)|sorm:"index(username,email)"|(联合)索引|
 json|-|sorm:"json"|强制以数据库支持的json格式储存|
 size|varchar size|sorm:"size(36)"|以36长度储存|
--|-|bson:",inline"|兼容mgo的结构体组合|
+-|-|bson:",inline"|兼容mgo的结构体组合|  
+
+修改字段的类型
+```Golang
+type User struct {
+	Uid string `sorm:"size(36);primary" json:"uid"` // 主键
+	Name  string `sorm:"size(32);index" json:"name"` // 长度为32
+	Phone string   `sorm:"size(32);index" json:"phone"` // 唯一手机号码
+	Username string `sorm:"size(16);unique"`   // 唯一用户名
+	Age   int    `sorm:"size(23);index" json:"age"`
+}
+```
+name 的长度改为64:
+```Golang 
+Name string   `sorm:"size(64);index"`
+```
+Sid和Name联合主键:
+``` Golang 
+Name string `sorm:"size(64),primary(sid)"` 
+```  
+## 1.3.2. 给模型赋值
+```Golang
+modelUser := db.Model("yourTableName")
+```
+## 1.3.3. 创建表
+用user表为例,给modelUser赋值后,我们来创建数据表,
+```Golang
+modelUser.Ensure(&User)
+```
+如果需要添加字段,则在user结构体中添加后初始化即可  
+`特别提示：` 本框架为避免程序员手残,特不提供删除字段方法,如需删除字段，请自己到数据库删除.  
+## 1.3.4 对象
+# 1.4. 数据库增删改查
+## 1.4.1. 创建记录
+```Golang
+	var user =new(User)
+	uid:=types.NewUID()
+	user.Uid=uid
+	user.Age=18
+	user.Name="大王叫我来巡山"
+	user.Username="输了你赢了世界又如何"
+	user.Phone="13733131131"
+	// 创建 
+	modelUser.Object().Create(data)
+```
+
 
