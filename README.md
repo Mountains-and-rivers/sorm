@@ -330,8 +330,41 @@ modelUser.Ensure(&User)
 ```
 如果需要添加字段,则在user结构体中添加后初始化即可  
 `特别提示：` 本框架为避免程序员手残,特不提供删除字段方法,如需删除字段，请自己到数据库删除.  
-## 1.3.4 对象
-# 1.4. 数据库增删改查
+# 1.4. 对象
+Object: 返回Objects类型，可以执行创建、删除、更新、查询等操作，其提供的方法如下
+```Golang
+// Objects 数据对象操作
+type Objects interface {
+	// normal
+	Filter(M) Objects                // 搜索结果
+	Count() (int, error)             // 数目
+	Limit(int) Objects               // 限制
+	Skip(int) Objects                // 跳过
+	Sort(...string) Objects          // 排序
+	Meta() (*Meta, error)            // 摘要信息
+	All(result interface{}) error    // 保存搜索结果至
+	One(result interface{}) error    // 取一条记录
+	Create(insert interface{}) error // 插入一条记录
+	Update(record interface{}) error // 更改(输入struct或map) *** struct为覆盖更新，map为局部更新
+	UpdateOne(obj interface{}) error // 只确保更改一条(输入struct或map)
+	Delete() error                   // 删除
+	DeleteOne() error                // 删除一条记录
+	// 事务操作
+	TLockUpdate(t Trans) error                 // 行锁
+	TCount(t Trans) (int, error)               // 数目
+	TAll(result interface{}, t Trans) error    // 保存搜索结果至
+	TOne(result interface{}, t Trans) error    // 取一条记录
+	TCreate(insert interface{}, t Trans) error // 插入一条记录
+	TUpdate(obj interface{}, t Trans) error    // 更改
+	TUpdateOne(obj interface{}, t Trans) error // 更改一条
+	TDelete(t Trans) error                     // 删除
+	TDeleteOne(t Trans) error                  // 删除一条记录
+	// result
+	GetResult() (Result, error) // 取返回结果
+	// other
+	With(opt *ArgObjects) Objects // 以新的日志级别运行
+}
+```
 ## 1.4.1. 创建记录
 ```Golang
 	var user =new(User)
