@@ -249,9 +249,15 @@ func main() {
  ```Golang
  	db.Ensure(&User{})
  ```
- ## 1.2.4.操作列
- 	```Golang
-		type User struct{
-			Name String `sorm:"index"`
-		}
-	```
+ # 1.3 模型
+ ## 1.3.1模型定义方法
+ Key|Args|Example|Comment|
+----|--------|--------|--------|
+primary|-|sorm:"primary"|设置为主键|
+serial|-|sorm:"serial"|自增数字主键|
+uique|relative field(s)|sorm:"unique(username,email)"|(联合)唯一|
+index|relative field(s)|sorm:"index(username,email)"|(联合)索引|
+json|-|sorm:"json"|强制以数据库支持的json格式储存|
+size|varchar size|sorm:"size(36)"|以36长度储存|
+-|-|bson:",inline"|兼容mgo的结构体组合|
+
