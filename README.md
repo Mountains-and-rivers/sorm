@@ -379,15 +379,15 @@ type Objects interface {
 	// 创建 
 	modelUser.Object().Create(data)
 ```
-## 1.4.2 查找记录
-### 1.4.2.1 查找一条记录
+## 1.4.2. 查找记录
+### 1.4.2.1. 查找一条记录
 ```Golang
 	var data = new(User)
 	modelUser.Object().Filter(orm.M{
 	"uid":uid,
 	}).One(data)
 ```
-### 1.4.2.2 查找多条记录
+### 1.4.2.2. 查找多条记录
 ```Golang
 	var data =[]*User
 	// 按最新创建时间排序，获取最多10条关于`"age"=18`的记录
@@ -396,4 +396,43 @@ type Objects interface {
 	}).All(&data)
 ```
 `小提示:`  
-如果不需要搜索特定字段的数据,请用for循环获取数据库全部数据；获取不是唯一字段的记录,请用All()方法获取.
+需要获取数据库全部数据,请用for循环获取数据库全部数据,可以提高性能；获取不是唯一字段的记录,请用All()方法获取.
+## 1.4.2 更新记录
+### 1.4.2.1. 更新一条记录
+```Golang
+	var upMap = make(map[string]interface{})
+	now := time.Now() 
+	upMap["updateTime"] = now
+	upMap["name"] = "找个和尚做晚餐"
+	// 更新该条记录的name字段值
+	modelUser.Object().Filter(orm.M{
+	"uid":uid,
+	}).UpdateOne(upMap)
+	
+```
+### 1.4.2.2. 更新多条记录
+```Golang
+	var upMap = make(map[string]interface{})
+	now := time.Now() 
+	upMap["updateTime"] = now
+	upMap["name"] = "找个和尚做晚餐"
+	// 更新所有记录age=18 的 name字段值
+	modelUser.Object().Filter(orm.M{
+	"age":18,
+	}).UpdateAll(upMap)
+```
+## 1.4.3. 删除记录
+### 1.4.3.1. 删除一条记录
+```Golang
+	// 删除该条记录
+	modelUser.Object().Filter(orm.M{
+	"uid":uid,
+	}).DeleteOne()
+```  
+### 1.4.3.2 删除多条记录
+```Golang
+	// 删除所有记录age=18的记录
+	modelUser.Object().Filter(orm.M{
+	"age":18,
+	}).DeleteAll()
+```
