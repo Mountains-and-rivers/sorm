@@ -305,6 +305,8 @@ size|varchar size|sorm:"size(36)"|以36长度储存|
 ```Golang
 type User struct {
 	Uid string `sorm:"size(36);primary" json:"uid"` // 主键
+	CreateTime time.Time `sorm:"index" json:"createTime"` // 创建时间
+	UpdateTime time.Time  `sorm:"index" json:"updateTime"` // 更新时间 
 	Name  string `sorm:"size(32);index" json:"name"` // 长度为32
 	Phone string   `sorm:"size(32);index" json:"phone"` // 唯一手机号码
 	Username string `sorm:"size(16);unique"`   // 唯一用户名
@@ -377,5 +379,21 @@ type Objects interface {
 	// 创建 
 	modelUser.Object().Create(data)
 ```
-
-
+## 1.4.2 查找记录
+### 1.4.2.1 查找一条记录
+```Golang
+	var data = new(User)
+	modelUser.Object().Filter(orm.M{
+	"uid":uid,
+	}).One(data)
+```
+### 1.4.2.2 查找多条记录
+```Golang
+	var data =[]*User
+	// 按最新创建时间排序，获取最多10条关于`"age"=18`的记录
+	modelUser.Object().Sort("-createTime").Limit(10).Filter(orm.M{
+	"age":18,
+	}).All(&data)
+```
+`小提示:`  
+如果不需要搜索特定字段的数据,请用for循环获取数据库全部数据；获取不是唯一字段的记录,请用All()方法获取.
